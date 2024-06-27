@@ -1,12 +1,16 @@
 package com.eventhive.eventHive.Events.Entity;
 
+import com.eventhive.eventHive.Category.Entity.Category;
+import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
 import com.eventhive.eventHive.Users.Entity.Users;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -40,26 +44,25 @@ public class Events {
     @Column(name = "price", nullable = false)
     private BigDecimal price = BigDecimal.ZERO;
 
-    @Column(name = "available_seats", nullable = false)
-    private Integer availableSeats;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_type", nullable = false, length = 20)
-    private TicketType ticketType;
-
     @ManyToOne
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
     private Users organizer;
 
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 
-    // Assuming you have an enum TicketType defined somewhere
-    public enum TicketType {
-        VIP, GENERAL
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
     }
 }
 

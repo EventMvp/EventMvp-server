@@ -1,5 +1,6 @@
-package com.eventhive.eventHive.Events.Entity;
+package com.eventhive.eventHive.Category.Entity;
 
+import com.eventhive.eventHive.Events.Entity.Events;
 import jakarta.persistence.*;
 import lombok.Data;
 
