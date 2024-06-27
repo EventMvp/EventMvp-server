@@ -1,0 +1,21 @@
+services:
+  postgres-event-hive-container:
+    image: postgres:alpine
+    restart: always
+    networks:
+      - pg_default
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+    volumes:
+      - event-hive-data:/var/lib/postgresql/data
+
+volumes:
+  event-hive-data:
+
+networks:
+  pg_default:
+    driver: bridge
