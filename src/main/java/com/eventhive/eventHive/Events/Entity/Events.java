@@ -41,8 +41,8 @@ public class Events {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @Column(name = "price", nullable = false)
-    private BigDecimal price = BigDecimal.ZERO;
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private List<EventTicket> eventTickets;
 
     @ManyToOne
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
@@ -63,6 +63,10 @@ public class Events {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public boolean isFreeEvent(){
+        return eventTickets != null && eventTickets.stream().allMatch(ticket -> ticket.getPrice().compareTo(BigDecimal.ZERO) == 0);
     }
 }
 

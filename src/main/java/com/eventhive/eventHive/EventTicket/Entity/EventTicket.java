@@ -5,6 +5,8 @@ import com.eventhive.eventHive.Events.Entity.TicketType;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @Entity
 @Table(name = "event_ticket", schema = "public")
@@ -24,4 +26,7 @@ public class EventTicket {
 
     @Column(name = "available_seats")
     private int availableSeats;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }

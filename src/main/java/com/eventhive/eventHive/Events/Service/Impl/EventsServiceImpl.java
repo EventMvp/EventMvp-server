@@ -5,6 +5,7 @@ import com.eventhive.eventHive.EventTicket.Dto.EventTicketDto;
 import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
 import com.eventhive.eventHive.EventTicket.Service.EventTicketService;
 import com.eventhive.eventHive.Events.Dto.CreateEventReqDto;
+import com.eventhive.eventHive.Events.Dto.GetAllEventRespDto;
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Events.Entity.TicketType;
 import com.eventhive.eventHive.Events.Repository.EventsRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventsServiceImpl implements EventsService {
@@ -32,8 +34,10 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<Events> getAllEvents() {
-        return repository.findAll();
+    public List<GetAllEventRespDto> getAllEvents() {
+        List<Events> getAllEvents = repository.findAll();
+
+        return getAllEvents.stream().map(GetAllEventRespDto::convertToDto).collect(Collectors.toList());
     }
 
     @Transactional
@@ -45,7 +49,6 @@ public class EventsServiceImpl implements EventsService {
         event.setDate(dto.getDate());
         event.setTime(dto.getTime());
         event.setLocation(dto.getLocation());
-        event.setPrice(dto.getPrice());
 
         event.setCategory(categoryService.getCategoryById(dto.getCategoryId()));
         event.setOrganizer(usersService.getUserById(organizerId));
@@ -59,8 +62,8 @@ public class EventsServiceImpl implements EventsService {
             eventTicket.setEvent(savedEvent);
             eventTicket.setTicketType(TicketType.valueOf(eventTicketDto.getTicketType()));
             eventTicket.setAvailableSeats(eventTicketDto.getAvailableSeats());
+            eventTicket.setPrice(eventTicketDto.getPrice());
             eventTicketService.saveEventTicket(eventTicket);
-
         }
 
         return savedEvent;

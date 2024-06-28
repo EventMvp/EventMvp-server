@@ -2,6 +2,7 @@ package com.eventhive.eventHive.Events.Controller;
 
 import com.eventhive.eventHive.Events.Dto.CreateEventReqDto;
 import com.eventhive.eventHive.Events.Service.EventsService;
+import com.eventhive.eventHive.Response.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +17,11 @@ public class EventsController {
 
     @GetMapping()
     public ResponseEntity<?> getAllEvents(){
-        return ResponseEntity.ok(service.getAllEvents());
+        return Response.successResponse("Get events successfully", service.getAllEvents());
     }
 
     @PostMapping("/add-event")
     public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
-        return ResponseEntity.ok(service.createEvent(dto, 1L));
+        return Response.successResponse("Create event successfully", service.createEvent(dto, 2L));
     }
 }
