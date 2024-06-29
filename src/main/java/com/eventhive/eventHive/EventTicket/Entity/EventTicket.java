@@ -1,7 +1,7 @@
 package com.eventhive.eventHive.EventTicket.Entity;
 
 import com.eventhive.eventHive.Events.Entity.Events;
-import com.eventhive.eventHive.Events.Entity.TicketType;
+import com.eventhive.eventHive.TicketType.Entity.TicketType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,8 +20,8 @@ public class EventTicket {
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Events event;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_type")
+    @ManyToOne
+    @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")
     private TicketType ticketType;
 
     @Column(name = "available_seats")

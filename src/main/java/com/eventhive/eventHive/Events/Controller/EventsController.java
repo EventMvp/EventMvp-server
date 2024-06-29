@@ -20,6 +20,11 @@ public class EventsController {
         return Response.successResponse("Get events successfully", service.getAllEvents());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEventById (@PathVariable("id") Long Id){
+        return Response.successResponse("Event with ID: " + Id + "successfully fetch", service.getEventById(Id));
+    }
+
     @PostMapping("/add-event")
     public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
         return Response.successResponse("Create event successfully", service.createEvent(dto, 2L));

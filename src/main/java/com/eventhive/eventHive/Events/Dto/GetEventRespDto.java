@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class GetAllEventRespDto {
+public class GetEventRespDto {
     private Long id;
     private String title;
     private String description;
@@ -21,8 +21,8 @@ public class GetAllEventRespDto {
     private CategoryRespDto category;
     private List<EventTicketDto> eventTickets;
 
-    public static GetAllEventRespDto convertToDto (Events events){
-        GetAllEventRespDto dto = new GetAllEventRespDto();
+    public static GetEventRespDto convertToDto (Events events){
+        GetEventRespDto dto = new GetEventRespDto();
         dto.setId(events.getId());
         dto.setTitle(events.getTitle());
         dto.setDescription(events.getDescription());

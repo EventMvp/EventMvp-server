@@ -13,7 +13,7 @@ public class EventTicketDto {
 
     public static EventTicketDto convertToDto(EventTicket eventTicket){
         EventTicketDto dto = new EventTicketDto();
-        dto.setTicketType(eventTicket.getTicketType().name());
+        dto.setTicketType(eventTicket.getTicketType().getTypeName());
         dto.setAvailableSeats(eventTicket.getAvailableSeats());
         dto.setPrice(eventTicket.getPrice());
         return dto;
