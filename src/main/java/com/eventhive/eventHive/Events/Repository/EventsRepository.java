@@ -23,4 +23,7 @@ public interface EventsRepository extends JpaRepository<Events, Long> {
             @Param("isFree") Boolean isFree,
             Pageable pageable
             );
+
+    @Query("SELECT e from Events e WHERE LOWER(e.title) LIKE LOWER (CONCAT('%', :title, '%'))")
+    Page<Events> findByTitle(@Param("title") String title, Pageable pageable);
 }

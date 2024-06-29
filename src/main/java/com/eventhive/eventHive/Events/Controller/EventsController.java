@@ -48,4 +48,14 @@ public class EventsController {
     public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
         return Response.successResponse("Create event successfully", service.createEvent(dto, 2L));
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchEventsByTitle(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size){
+        List<GetEventRespDto> events = service.searchEventByTitle(title, page, size);
+
+        return Response.successResponse("Search result fetched successfully", events);
+    }
 }

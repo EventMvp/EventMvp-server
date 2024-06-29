@@ -91,4 +91,12 @@ public class EventsServiceImpl implements EventsService {
 
         return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<GetEventRespDto> searchEventByTitle(String title, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Events> eventsPage = repository.findByTitle(title, pageable);
+
+        return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
+    }
 }
