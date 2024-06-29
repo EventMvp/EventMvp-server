@@ -2,6 +2,7 @@ package com.eventhive.eventHive.Events.Dto;
 
 import com.eventhive.eventHive.EventTicket.Dto.EventTicketDto;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,4 +19,5 @@ public class CreateEventReqDto {
     private Long categoryId;
     private BigDecimal price;
     private List<EventTicketDto> ticketTypes;
+    private MultipartFile picture;
 }

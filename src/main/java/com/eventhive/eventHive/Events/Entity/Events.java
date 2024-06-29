@@ -30,6 +30,9 @@ public class Events {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Column(name = "picture")
+    private String picture;
+
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
