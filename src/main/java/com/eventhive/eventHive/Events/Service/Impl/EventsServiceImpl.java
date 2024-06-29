@@ -12,9 +12,13 @@ import com.eventhive.eventHive.Events.Service.EventsService;
 import com.eventhive.eventHive.TicketType.Entity.TicketType;
 import com.eventhive.eventHive.TicketType.Service.TicketTypeService;
 import com.eventhive.eventHive.Users.Service.UsersService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,8 +39,9 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<GetEventRespDto> getAllEvents() {
-        List<Events> getAllEvents = repository.findAll();
+    public List<GetEventRespDto> getAllEvents(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Events> getAllEvents = repository.findAll(pageable);
 
         return getAllEvents.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
     }
@@ -77,5 +82,13 @@ public class EventsServiceImpl implements EventsService {
         }
 
         return savedEvent;
+    }
+
+    @Override
+    public List<GetEventRespDto> filterWithMultipleCriteria(Long categoryId, LocalDate date, Boolean isFree, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Events> eventsPage = repository.findByFilters(categoryId, date, isFree, pageable);
+
+        return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
     }
 }

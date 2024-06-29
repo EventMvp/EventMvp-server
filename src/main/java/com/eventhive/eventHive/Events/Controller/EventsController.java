@@ -1,10 +1,15 @@
 package com.eventhive.eventHive.Events.Controller;
 
 import com.eventhive.eventHive.Events.Dto.CreateEventReqDto;
+import com.eventhive.eventHive.Events.Dto.GetEventRespDto;
 import com.eventhive.eventHive.Events.Service.EventsService;
 import com.eventhive.eventHive.Response.Response;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/events")
@@ -16,13 +21,27 @@ public class EventsController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllEvents(){
-        return Response.successResponse("Get events successfully", service.getAllEvents());
+    public ResponseEntity<?> getAllEvents(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ){
+        return Response.successResponse("Get events successfully", service.getAllEvents(page, size));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getEventById (@PathVariable("id") Long Id){
         return Response.successResponse("Event with ID: " + Id + "successfully fetch", service.getEventById(Id));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<?> filterEventsByMultipleCriteria(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) Boolean isFree,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        List<GetEventRespDto> events = service.filterWithMultipleCriteria(categoryId, date, isFree, page, size);
+        return Response.successResponse("Events with criteria successfully fetch", events);
     }
 
     @PostMapping("/add-event")

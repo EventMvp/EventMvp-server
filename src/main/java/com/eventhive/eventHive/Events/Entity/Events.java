@@ -14,7 +14,9 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "events", schema = "public")
+@Table(name = "events", schema = "public", indexes = {
+        @Index(name = "idx_event_title", columnList = "title")
+})
 public class Events {
 
     @Id
