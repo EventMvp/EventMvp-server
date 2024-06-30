@@ -4,8 +4,9 @@ import com.eventhive.eventHive.Auth.Service.AuthService;
 import com.eventhive.eventHive.Auth.dto.LoginReqDto;
 import com.eventhive.eventHive.Auth.dto.LoginRespDto;
 import com.eventhive.eventHive.Auth.entity.UserAuth;
-import com.eventhive.eventHive.Response.Response;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -54,5 +55,22 @@ public class AuthController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Set-Cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(loginRespDto);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null){
+            for (Cookie cookie : cookies){
+                if ("sid".equals(cookie.getName())){
+                    //Clear cookies
+                    cookie.setMaxAge(0);
+                    cookie.setValue(null);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
+        return ResponseEntity.ok().body("Logout Successfully");
     }
 }
