@@ -1,6 +1,7 @@
 package com.eventhive.eventHive.Users.dto;
 
 import com.eventhive.eventHive.Users.Entity.Users;
+import com.eventhive.eventHive.utils.ReferralCodeGenerator;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -18,11 +19,20 @@ public class RegisterReqDto {
     @NotBlank(message = "You need to put the same password")
     private String passwordMatch;
 
+    @NotBlank(message = "You need to choose role")
+    private String role;
+
+    private String referralCode;
+
     public Users toEntity(){
         Users user = new Users();
         user.setEmail(email);
         user.setUsername(name);
         user.setPassword(password);
+        user.setRole(Users.UserRole.valueOf(role));
+
+        //Generate referral code for new register user
+        user.setReferralCode(referralCode != null ? referralCode : ReferralCodeGenerator.generateReferralCode());
         return user;
     }
 
