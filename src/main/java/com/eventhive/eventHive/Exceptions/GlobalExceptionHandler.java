@@ -36,6 +36,7 @@ public class GlobalExceptionHandler {
         return Response.failedResponse(HttpStatus.BAD_REQUEST.value(), "Validation failed", errorMessage);
     }
 
+
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Response<String>> handleAllExceptions(Exception ex) {
 
