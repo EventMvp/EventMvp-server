@@ -2,7 +2,6 @@ package com.eventhive.eventHive.Voucher.Entity;
 
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Users.Entity.Users;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -24,7 +23,6 @@ public class Voucher {
     @Column(name = "discount_percentage", nullable = false)
     private int discountPercentage;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Events event;
@@ -33,14 +31,22 @@ public class Voucher {
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
     private Users organizer;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private Users users;
+
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "is_referral_based", nullable = false)
+    private boolean isReferralBased = false;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
+
 }

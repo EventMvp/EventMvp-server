@@ -4,13 +4,16 @@ import com.eventhive.eventHive.Exceptions.EmailAlreadyExistException;
 import com.eventhive.eventHive.Exceptions.ReferralNotFoundException;
 import com.eventhive.eventHive.PointHistory.Entity.PointHistory;
 import com.eventhive.eventHive.PointHistory.Repository.PointHistoryRepository;
+import com.eventhive.eventHive.PointHistory.Service.PointHistoryService;
 import com.eventhive.eventHive.Referral.Entity.Referral;
 import com.eventhive.eventHive.Referral.Repository.ReferralRepository;
+import com.eventhive.eventHive.Referral.Service.ReferralService;
 import com.eventhive.eventHive.Users.Entity.Users;
 import com.eventhive.eventHive.Users.Repository.UsersRepository;
 import com.eventhive.eventHive.Users.Service.UsersService;
 import com.eventhive.eventHive.Users.dto.RegisterReqDto;
 import com.eventhive.eventHive.Users.dto.RegisterRespDto;
+import com.eventhive.eventHive.Voucher.Service.VoucherService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +26,16 @@ import java.util.Optional;
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository repository;
     private final PasswordEncoder passwordEncoder;
-    private final ReferralRepository referralRepository;
-    private final PointHistoryRepository pointHistoryRepository;
+    private final PointHistoryService pointHistoryService;
+    private final ReferralService referralService;
+    private final VoucherService voucherService;
 
-    public UsersServiceImpl(UsersRepository repository, PasswordEncoder passwordEncoder, ReferralRepository referralRepository, PointHistoryRepository pointHistoryRepository) {
+    public UsersServiceImpl(UsersRepository repository, PasswordEncoder passwordEncoder, PointHistoryService pointHistoryService, ReferralService referralService, VoucherService voucherService) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
-        this.referralRepository = referralRepository;
-        this.pointHistoryRepository = pointHistoryRepository;
+        this.pointHistoryService = pointHistoryService;
+        this.referralService = referralService;
+        this.voucherService = voucherService;
     }
 
     @Override
@@ -56,22 +61,14 @@ public class UsersServiceImpl implements UsersService {
             //Create a service method for checking referral availability
             if (referringUser != null){
                 //Create referral record
-                Referral referral = new Referral();
-                referral.setUser(referringUser);
-                referral.setReferredUser(newUser);
-                referralRepository.save(referral);
-
+                referralService.createReferral(referringUser, newUser);
                 //Award point
                 referringUser.setPoints(referringUser.getPoints() + 10000);
                 repository.save(referringUser);
-
                 //Create a history point record
-                PointHistory pointHistory = new PointHistory();
-                pointHistory.setUser(referringUser);
-                pointHistory.setPoints(10000);
-                pointHistory.setExpiryAt(LocalDate.now().plusMonths(3));
-                pointHistoryRepository.save(pointHistory);
-
+                pointHistoryService.awardsPoints(referringUser);
+                //give voucher to users that use referral
+                voucherService.issueReferralVoucher(referringUser);
             }
         }
         Users savedUser = repository.save(newUser);
