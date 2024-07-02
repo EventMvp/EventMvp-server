@@ -2,6 +2,7 @@ package com.eventhive.eventHive.Voucher.Entity;
 
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Users.Entity.Users;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,9 +18,13 @@ public class Voucher {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "voucher_name", nullable = false)
+    private String name;
+
     @Column(name = "discount_percentage", nullable = false)
     private int discountPercentage;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Events event;
