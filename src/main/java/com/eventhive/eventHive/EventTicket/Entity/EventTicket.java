@@ -2,6 +2,7 @@ package com.eventhive.eventHive.EventTicket.Entity;
 
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.TicketType.Entity.TicketType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,9 +17,13 @@ public class EventTicket {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Events event;
+
+    @Column(name = "ticket_type", nullable = false)
+    private String ticketTypeStr;
 
     @ManyToOne
     @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")

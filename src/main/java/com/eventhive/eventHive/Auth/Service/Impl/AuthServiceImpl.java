@@ -4,6 +4,7 @@ import com.eventhive.eventHive.Auth.Service.AuthService;
 import com.eventhive.eventHive.Users.Repository.UsersRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -33,13 +34,15 @@ public class AuthServiceImpl implements AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        Long userId = usersRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("Id is not found")).getId();
+
         JwtClaimsSet claims =JwtClaimsSet.builder()
                 .issuer("EventHive")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(authentication.getName())
                 .claim("scope", scope)
-                .claim("userId", usersRepository.findByEmail(authentication.getName()).get().getId())
+                .claim("userId", userId)
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

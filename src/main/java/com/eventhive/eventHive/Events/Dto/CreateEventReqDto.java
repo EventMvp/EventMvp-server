@@ -1,6 +1,7 @@
 package com.eventhive.eventHive.Events.Dto;
 
 import com.eventhive.eventHive.EventTicket.Dto.EventTicketDto;
+import com.eventhive.eventHive.Voucher.dto.VoucherDto;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,5 +20,6 @@ public class CreateEventReqDto {
     private Long categoryId;
     private BigDecimal price;
     private List<EventTicketDto> ticketTypes;
+    private List<VoucherDto> vouchers;
     private MultipartFile picture;
 }

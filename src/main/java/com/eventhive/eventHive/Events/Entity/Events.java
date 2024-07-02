@@ -3,6 +3,7 @@ package com.eventhive.eventHive.Events.Entity;
 import com.eventhive.eventHive.Category.Entity.Category;
 import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
 import com.eventhive.eventHive.Users.Entity.Users;
+import com.eventhive.eventHive.Voucher.Entity.Voucher;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -46,12 +48,15 @@ public class Events {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST)
     private List<EventTicket> eventTickets;
 
     @ManyToOne
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
     private Users organizer;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
+    private Set<Voucher> vouchers;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
