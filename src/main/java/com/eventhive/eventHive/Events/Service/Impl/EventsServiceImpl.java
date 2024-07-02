@@ -1,7 +1,5 @@
 package com.eventhive.eventHive.Events.Service.Impl;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.eventhive.eventHive.Category.Service.CategoryService;
 import com.eventhive.eventHive.EventTicket.Dto.EventTicketDto;
 import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
@@ -24,9 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,27 +36,13 @@ public class EventsServiceImpl implements EventsService {
     private final EventTicketService eventTicketService;
     private final TicketTypeService ticketTypeService;
     private final VoucherService voucherService;
-    private final Cloudinary cloudinary;
-
-    public EventsServiceImpl(EventsRepository repository, CategoryService categoryService, UsersService usersService, EventTicketService eventTicketService, TicketTypeService ticketTypeService, VoucherService voucherService, Cloudinary cloudinary) {
+    public EventsServiceImpl(EventsRepository repository, CategoryService categoryService, UsersService usersService, EventTicketService eventTicketService, TicketTypeService ticketTypeService, VoucherService voucherService) {
         this.repository = repository;
         this.categoryService = categoryService;
         this.usersService = usersService;
         this.eventTicketService = eventTicketService;
         this.ticketTypeService = ticketTypeService;
         this.voucherService = voucherService;
-        this.cloudinary = cloudinary;
-    }
-
-    private static final List<String> ALLOWED_FILE_TYPES = Arrays.asList("image/jpeg", "image/png");
-
-    private boolean isImageFile(MultipartFile file) {
-        return ALLOWED_FILE_TYPES.contains(file.getContentType());
-    }
-
-    private String uploadFile(MultipartFile file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        return uploadResult.get("url").toString();
     }
 
     @Override
@@ -79,7 +61,7 @@ public class EventsServiceImpl implements EventsService {
 
     @Transactional
     @Override
-    public CreateEventResponseDto createEvent(CreateEventReqDto dto, Long organizerId) throws IOException {
+    public CreateEventResponseDto createEvent(CreateEventReqDto dto, Long organizerId) {
         Events event = new Events();
         event.setTitle(dto.getTitle());
         event.setDescription(dto.getDescription());
@@ -88,15 +70,8 @@ public class EventsServiceImpl implements EventsService {
         event.setLocation(dto.getLocation());
         event.setCategory(categoryService.getCategoryById(dto.getCategoryId()));
         event.setOrganizer(usersService.getUserById(organizerId));
+        event.setPicture(dto.getPicture());
         var savedEvent = repository.save(event);
-        // Validate and upload the picture
-        if (dto.getPicture() != null && !dto.getPicture().isEmpty()) {
-            if (!isImageFile(dto.getPicture())) {
-                throw new IllegalArgumentException("File must be an image (JPEG, PNG, GIF)");
-            }
-            String fileUrl = uploadFile(dto.getPicture());
-            event.setPicture(fileUrl);
-        }
 
         //save event ticket
         for (EventTicketDto eventTicketDto : dto.getTicketTypes()){

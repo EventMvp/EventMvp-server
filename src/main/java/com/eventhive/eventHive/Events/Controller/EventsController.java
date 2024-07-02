@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -47,14 +46,9 @@ public class EventsController {
     }
 
     @PostMapping("/add-event")
-    public ResponseEntity<?> createEvent(@ModelAttribute CreateEventReqDto dto){
-        try {
-            return Response.successResponse("Success Add Event", service.createEvent(dto, 2L));
-        } catch (IllegalArgumentException e){
-            return Response.failedResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage(), null);
-        } catch (IOException e){
-            return Response.failedResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), null);
-        }
+    public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
+        return Response.successResponse("Success Add Event", service.createEvent(dto, 2L));
+
     }
 
     @GetMapping("/search")

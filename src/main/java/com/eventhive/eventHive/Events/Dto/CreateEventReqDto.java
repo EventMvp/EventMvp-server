@@ -21,5 +21,5 @@ public class CreateEventReqDto {
     private BigDecimal price;
     private List<EventTicketDto> ticketTypes;
     private List<VoucherDto> vouchers;
-    private MultipartFile picture;
+    private String picture;
 }
