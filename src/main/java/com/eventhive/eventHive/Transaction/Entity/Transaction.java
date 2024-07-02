@@ -6,6 +6,7 @@ import com.eventhive.eventHive.Voucher.Entity.Voucher;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class Transaction {
     private Users user;
 
     @Column(name = "total_amount", nullable = false)
-    private Double totalAmount;
+    private BigDecimal totalAmount;
 
     @ManyToOne
     @JoinColumn(name = "voucher_id", referencedColumnName = "id")
