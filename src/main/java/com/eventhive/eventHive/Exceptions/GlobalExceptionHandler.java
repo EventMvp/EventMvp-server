@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public final ResponseEntity<Response<String>> handleUsernameNotFoundException(UsernameNotFoundException ex){
+        return Response.failedResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public final ResponseEntity<Response<String>> handleValidationExceptions(MethodArgumentNotValidException ex){
         log.error(ex.getMessage(), ex);
