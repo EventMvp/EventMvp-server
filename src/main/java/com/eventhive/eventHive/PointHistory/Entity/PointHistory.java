@@ -23,15 +23,23 @@ public class PointHistory {
     @Column(name = "points", nullable = false)
     private int points;
 
-    @Column(name = "expiry_at", nullable = false)
+    @Column(name = "expiry_at")
     private LocalDate expiryAt;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PointsStatus status;
+
     @PrePersist
     protected void onCreate(){
         createdAt = LocalDateTime.now();
+    }
+
+    public enum PointsStatus {
+        ACTIVE, EXPIRED, REDEEMED
     }
 
 }

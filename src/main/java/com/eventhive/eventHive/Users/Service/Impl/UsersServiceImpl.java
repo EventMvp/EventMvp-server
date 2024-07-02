@@ -62,11 +62,8 @@ public class UsersServiceImpl implements UsersService {
             if (referringUser != null){
                 //Create referral record
                 referralService.createReferral(referringUser, newUser);
-                //Award point
-                referringUser.setPoints(referringUser.getPoints() + 10000);
-                repository.save(referringUser);
                 //Create a history point record
-                pointHistoryService.awardsPoints(referringUser);
+                pointHistoryService.awardsPoints(referringUser, 10000);
                 //give voucher to users that use referral
                 voucherService.issueReferralVoucher(referringUser);
             }
