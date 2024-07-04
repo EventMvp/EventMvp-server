@@ -8,6 +8,8 @@ import com.eventhive.eventHive.Users.Repository.UsersRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class PointHistoryServiceImpl implements PointHistoryService {
@@ -25,7 +27,6 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         pointHistory.setUser(user);
         pointHistory.setPoints(points);
         pointHistory.setExpiryAt(LocalDate.now().plusMonths(3));
-        pointHistory.setStatus(PointHistory.PointsStatus.ACTIVE);
         repository.save(pointHistory);
 
         user.setPoints(user.getPoints() + points);
@@ -34,13 +35,25 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 
     @Override
     public void redeemPoints(Users user, int points) {
-        if (user.getPoints() < points){
+        //Check only active points to subtract
+        List<PointHistory> listActivePoints = repository.findActivePointByUserId(user.getId(), LocalDateTime.now());
+        int totalActivePoints = listActivePoints.stream().mapToInt(PointHistory::getPoints).sum();
+
+        if (totalActivePoints < points){
             throw new IllegalArgumentException("Insufficient points balance");
         }
+
+        int pointToDeduct = points;
+        for (PointHistory history : listActivePoints){
+            if (pointToDeduct <= 0){
+                break;
+            }
+
+        }
+
         PointHistory pointsHistory = new PointHistory();
         pointsHistory.setUser(user);
         pointsHistory.setPoints(-points);
-        pointsHistory.setStatus(PointHistory.PointsStatus.REDEEMED);
         repository.save(pointsHistory);
 
         user.setPoints(user.getPoints() - points);

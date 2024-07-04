@@ -5,6 +5,7 @@ import com.eventhive.eventHive.Category.Repository.CategoryRepository;
 import com.eventhive.eventHive.Category.Service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,5 +19,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category getCategoryById(Long categoryId) {
         return repository.findById(categoryId).orElseThrow(() -> new RuntimeException("category not available"));
+    }
+
+    @Override
+    public List<Category> getAllCategory() {
+        return repository.findAll();
     }
 }

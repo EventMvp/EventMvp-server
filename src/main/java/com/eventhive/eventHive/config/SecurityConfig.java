@@ -40,11 +40,15 @@ import java.util.Arrays;
 public class SecurityConfig {
     private final RsaConfigProperties rsaConfigProperties;
     private final UserDetailsService userDetailsService;
+    private final CorsConfigurationSourceImpl corsConfigurationSource;
 
-    public SecurityConfig(RsaConfigProperties rsaConfigProperties, UserDetailsService userDetailsService) {
+    public SecurityConfig(RsaConfigProperties rsaConfigProperties, UserDetailsService userDetailsService, CorsConfigurationSourceImpl corsConfigurationSource) {
         this.rsaConfigProperties = rsaConfigProperties;
         this.userDetailsService = userDetailsService;
+        this.corsConfigurationSource = corsConfigurationSource;
     }
+
+
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -76,7 +80,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/error/**").permitAll();
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
@@ -106,3 +110,4 @@ public class SecurityConfig {
                 .build();
     }
 }
+

@@ -39,8 +39,7 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setDiscountPercentage(10);
         voucher.setExpiryDate(LocalDate.now().plusMonths(3));
         voucher.setReferralBased(true);
-        voucher.setOrganizer(null);
-        voucher.setUsers(users);
+        voucher.setOrganizer(users);
 
         voucherRepository.save(voucher);
     }

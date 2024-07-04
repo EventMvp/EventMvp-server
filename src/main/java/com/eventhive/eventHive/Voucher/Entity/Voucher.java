@@ -31,10 +31,6 @@ public class Voucher {
     @JoinColumn(name = "organizer_id", referencedColumnName = "id")
     private Users organizer;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users users;
-
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
 

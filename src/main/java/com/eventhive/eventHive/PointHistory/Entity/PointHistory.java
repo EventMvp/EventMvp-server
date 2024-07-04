@@ -29,17 +29,9 @@ public class PointHistory {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "status", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PointsStatus status;
-
     @PrePersist
     protected void onCreate(){
         createdAt = LocalDateTime.now();
-    }
-
-    public enum PointsStatus {
-        ACTIVE, EXPIRED, REDEEMED
     }
 
 }
