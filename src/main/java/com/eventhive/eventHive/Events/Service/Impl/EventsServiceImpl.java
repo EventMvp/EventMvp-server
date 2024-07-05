@@ -84,7 +84,6 @@ public class EventsServiceImpl implements EventsService {
 
             eventTicket.setAvailableSeats(eventTicketDto.getAvailableSeats());
             eventTicket.setPrice(eventTicketDto.getPrice());
-            log.info(eventTicket.toString());
             eventTicketService.saveEventTicket(eventTicket);
         }
 

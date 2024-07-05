@@ -38,7 +38,6 @@ public class GetEventRespDto {
         List<BigDecimal> prices = events.getEventTickets().stream()
                 .map(EventTicket::getPrice)
                 .toList();
-        log.info("event ID " + events.getId().toString());
         if (prices != null && !prices.isEmpty()){
             BigDecimal minPrice = prices.stream().min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
             BigDecimal maxPrice = prices.stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);

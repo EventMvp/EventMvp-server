@@ -34,17 +34,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login (@RequestBody LoginReqDto loginReqDto){
-        log.info("Handling req for: " + loginReqDto.getPassword());
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
                         loginReqDto.getEmail(),
                         loginReqDto.getPassword()
                 ));
-        log.info(authentication.toString());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         UserAuth userDetails = (UserAuth) authentication.getPrincipal();
-        log.info("Token requested for user: " + userDetails.getUsername() + " with roles: " + userDetails.getAuthorities().toArray()[0]);
         String token = authService.generateToken(authentication);
 
         LoginRespDto loginRespDto = new LoginRespDto();

@@ -85,7 +85,9 @@ public class SecurityConfig {
                     auth.requestMatchers("/error/**").permitAll();
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
                     auth.requestMatchers("/api/v1/users/register").permitAll();
-                    auth.requestMatchers("/api/v1/events").permitAll();
+                    auth.requestMatchers("/api/v1/events/**").permitAll();
+                    auth.requestMatchers("/api/v1/category").permitAll();
+                    auth.requestMatchers("/api/v1/filter/**").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/api/v1/events/add-event").authenticated();
                     auth.anyRequest().authenticated();
                 })
@@ -94,7 +96,6 @@ public class SecurityConfig {
                     oauth2.jwt((jwt) -> jwt.decoder(jwtDecoder()));
                     oauth2.bearerTokenResolver((request) -> {
                         Cookie[] cookies = request.getCookies();
-                        log.info("Cookies sent: " + Arrays.toString(cookies));
                         if (cookies != null){
                             for (Cookie cookie : cookies){
                                 if ("sid".equals(cookie.getName())){
