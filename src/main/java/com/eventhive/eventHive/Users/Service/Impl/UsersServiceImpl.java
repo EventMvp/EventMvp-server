@@ -1,5 +1,6 @@
 package com.eventhive.eventHive.Users.Service.Impl;
 
+import com.eventhive.eventHive.Auth.helper.Claims;
 import com.eventhive.eventHive.Exceptions.EmailAlreadyExistException;
 import com.eventhive.eventHive.Exceptions.ReferralNotFoundException;
 import com.eventhive.eventHive.PointHistory.Entity.PointHistory;
@@ -13,7 +14,10 @@ import com.eventhive.eventHive.Users.Repository.UsersRepository;
 import com.eventhive.eventHive.Users.Service.UsersService;
 import com.eventhive.eventHive.Users.dto.RegisterReqDto;
 import com.eventhive.eventHive.Users.dto.RegisterRespDto;
+import com.eventhive.eventHive.Users.dto.UserProfileDto;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
+import lombok.extern.java.Log;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Log
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -70,5 +75,19 @@ public class UsersServiceImpl implements UsersService {
         }
         Users savedUser = repository.save(newUser);
         return RegisterRespDto.fromEntity(savedUser);
+    }
+
+    @Override
+    public UserProfileDto getProfile() {
+        var claims =Claims.getClaimsFromJwt();
+        log.info("CLAIMS = " + claims);
+        Long currentUserId =(Long) claims.get("userId");
+
+        Users currentUser = repository.findById(currentUserId).orElseThrow(() -> new UsernameNotFoundException("Id is not found"));
+        UserProfileDto profileDto = UserProfileDto.fromEntity(currentUser);
+        profileDto.setId(currentUser.getId());
+        profileDto.setPoints(pointHistoryService.totalActivePoints(currentUserId));
+        log.info("PROFILE DTO = " + profileDto);
+        return profileDto;
     }
 }

@@ -13,6 +13,6 @@ public interface PointHistoryRepository extends JpaRepository<PointHistory, Long
     @Query("SELECT p from PointHistory p WHERE p.user.id = :userId AND p.expiryAt > :now AND p.points > 0")
     List<PointHistory> findActivePointByUserId(
             @Param("userId") Long userId,
-            @Param("now")LocalDateTime now
+            @Param("now")LocalDate now
             );
 }

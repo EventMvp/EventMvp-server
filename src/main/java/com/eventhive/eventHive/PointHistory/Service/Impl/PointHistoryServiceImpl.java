@@ -36,7 +36,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     @Override
     public void redeemPoints(Users user, int points) {
         //Check only active points to subtract
-        List<PointHistory> listActivePoints = repository.findActivePointByUserId(user.getId(), LocalDateTime.now());
+        List<PointHistory> listActivePoints = repository.findActivePointByUserId(user.getId(), LocalDate.now());
         int totalActivePoints = listActivePoints.stream().mapToInt(PointHistory::getPoints).sum();
 
         if (totalActivePoints < points){
@@ -58,6 +58,15 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 
         user.setPoints(user.getPoints() - points);
         usersRepository.save(user);
+    }
+
+    @Override
+    public int totalActivePoints(Long userId) {
+        LocalDate now = LocalDate.now();
+        List<PointHistory> pointHistoryList = repository.findActivePointByUserId(userId, now);
+
+        return pointHistoryList.stream()
+                .mapToInt(PointHistory::getPoints).sum();
     }
 
 }

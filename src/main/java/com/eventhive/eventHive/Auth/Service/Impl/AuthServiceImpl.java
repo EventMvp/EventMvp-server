@@ -26,25 +26,25 @@ public class AuthServiceImpl implements AuthService {
         this.usersRepository = usersRepository;
     }
 
-    @Override
-    public String generateToken(Authentication authentication) {
-        Instant now =Instant.now();
-        String scope = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        @Override
+        public String generateToken(Authentication authentication) {
+            Instant now =Instant.now();
+            String scope = authentication.getAuthorities()
+                    .stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.joining(" "));
 
-        Long userId = usersRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("Id is not found")).getId();
+            Long userId = usersRepository.findByEmail(authentication.getName()).orElseThrow(() -> new UsernameNotFoundException("Id is not found")).getId();
 
-        JwtClaimsSet claims =JwtClaimsSet.builder()
-                .issuer("EventHive")
-                .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject(authentication.getName())
-                .claim("scope", scope)
-                .claim("userId", userId)
-                .build();
+            JwtClaimsSet claims =JwtClaimsSet.builder()
+                    .issuer("EventHive")
+                    .issuedAt(now)
+                    .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                    .subject(authentication.getName())
+                    .claim("scope", scope)
+                    .claim("userId", userId)
+                    .build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+            return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }
