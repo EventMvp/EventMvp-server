@@ -1,4 +1,13 @@
 services:
+  service-backend:
+    container_name: eventhive-docker
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file:
+      - .env
+    ports:
+      - 8080:8080
   postgres-event-hive-container:
     image: postgres:alpine
     restart: always
