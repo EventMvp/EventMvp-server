@@ -72,7 +72,7 @@ public class EventsServiceImpl implements EventsService {
         event.setOrganizer(usersService.getUserById(organizerId));
         event.setPicture(dto.getPicture());
         var savedEvent = repository.save(event);
-
+        List<EventTicket> savedEventTickets = new ArrayList<>();
         //save event ticket
         for (EventTicketDto eventTicketDto : dto.getTicketTypes()){
             EventTicket eventTicket = new EventTicket();
@@ -85,6 +85,7 @@ public class EventsServiceImpl implements EventsService {
             eventTicket.setAvailableSeats(eventTicketDto.getAvailableSeats());
             eventTicket.setPrice(eventTicketDto.getPrice());
             eventTicketService.saveEventTicket(eventTicket);
+            savedEventTickets.add(eventTicket);
         }
 
         //Save the vouchers
@@ -101,6 +102,7 @@ public class EventsServiceImpl implements EventsService {
         }
 
         //Create Response DTO
+        savedEvent.setEventTickets(savedEventTickets);
         return CreateEventResponseDto.toEntity(savedEvent);
     }
 

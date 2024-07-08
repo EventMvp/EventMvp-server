@@ -48,7 +48,7 @@ public class Events {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "event", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private List<EventTicket> eventTickets;
 
     @ManyToOne
