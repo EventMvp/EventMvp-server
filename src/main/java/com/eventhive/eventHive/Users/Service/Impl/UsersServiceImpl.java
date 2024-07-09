@@ -16,6 +16,7 @@ import com.eventhive.eventHive.Users.dto.RegisterReqDto;
 import com.eventhive.eventHive.Users.dto.RegisterRespDto;
 import com.eventhive.eventHive.Users.dto.UserProfileDto;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
+import com.eventhive.eventHive.utils.ReferralCodeGenerator;
 import lombok.extern.java.Log;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,18 +62,22 @@ public class UsersServiceImpl implements UsersService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //check dto if referral code is provided
-        if (user.getReferralCode() != null){
+        if (user.getReferralCode() != null && newUser.getRole() == Users.UserRole.CUSTOMER){
             Users referringUser = repository.findByReferralCode(user.getReferralCode()).orElseThrow(() -> new ReferralNotFoundException("Referral code is not found"));
-            //Create a service method for checking referral availability
-            if (referringUser != null){
-                //Create referral record
-                referralService.createReferral(referringUser, newUser);
-                //Create a history point record
-                pointHistoryService.awardsPoints(referringUser, 10000);
-                //give voucher to users that use referral
-                voucherService.issueReferralVoucher(referringUser);
-            }
+            //Create referral record
+            referralService.createReferral(referringUser, newUser);
+            //Create a history point record
+            pointHistoryService.awardsPoints(referringUser, 10000);
+            //give voucher to users that use referral
+            voucherService.issueReferralVoucher(referringUser);
         }
+        //Ensure referral code only set to customer role
+        if (newUser.getRole() == Users.UserRole.CUSTOMER){
+            newUser.setReferralCode(ReferralCodeGenerator.generateReferralCode());
+        } else {
+            newUser.setReferralCode(null);
+        }
+
         Users savedUser = repository.save(newUser);
         return RegisterRespDto.fromEntity(savedUser);
     }

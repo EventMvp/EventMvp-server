@@ -15,10 +15,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,8 +49,6 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
         this.corsConfigurationSource = corsConfigurationSource;
     }
-
-
 
     @Bean
     PasswordEncoder passwordEncoder(){
@@ -82,13 +82,13 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/api/v1/events/add-event").hasAuthority("SCOPE_ORGANIZER");
                     auth.requestMatchers("/error/**").permitAll();
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
                     auth.requestMatchers("/api/v1/users/register").permitAll();
                     auth.requestMatchers("/api/v1/events/**").permitAll();
                     auth.requestMatchers("/api/v1/category").permitAll();
                     auth.requestMatchers("/api/v1/filter/**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/api/v1/events/add-event").authenticated();
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

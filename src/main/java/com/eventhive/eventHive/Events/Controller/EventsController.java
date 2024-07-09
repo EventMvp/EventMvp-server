@@ -7,6 +7,7 @@ import com.eventhive.eventHive.Response.Response;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -47,7 +48,7 @@ public class EventsController {
 
     @PostMapping("/add-event")
     public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
-        return Response.successResponse("Success Add Event", service.createEvent(dto, 2L));
+        return Response.successResponse("Success Add Event", service.createEvent(dto));
 
     }
 

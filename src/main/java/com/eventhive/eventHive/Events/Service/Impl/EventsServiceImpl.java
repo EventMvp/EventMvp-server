@@ -1,5 +1,6 @@
 package com.eventhive.eventHive.Events.Service.Impl;
 
+import com.eventhive.eventHive.Auth.helper.Claims;
 import com.eventhive.eventHive.Category.Service.CategoryService;
 import com.eventhive.eventHive.EventTicket.Dto.EventTicketDto;
 import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
@@ -61,7 +62,10 @@ public class EventsServiceImpl implements EventsService {
 
     @Transactional
     @Override
-    public CreateEventResponseDto createEvent(CreateEventReqDto dto, Long organizerId) {
+    public CreateEventResponseDto createEvent(CreateEventReqDto dto) {
+        var claims = Claims.getClaimsFromJwt();
+        Long organizerId = (Long) claims.get("userId");
+
         Events event = new Events();
         event.setTitle(dto.getTitle());
         event.setDescription(dto.getDescription());

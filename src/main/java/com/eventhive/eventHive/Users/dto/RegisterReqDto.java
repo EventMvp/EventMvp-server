@@ -30,9 +30,6 @@ public class RegisterReqDto {
         user.setUsername(name);
         user.setPassword(password);
         user.setRole(Users.UserRole.valueOf(role));
-
-        //Generate referral code for new register user
-        user.setReferralCode(ReferralCodeGenerator.generateReferralCode());
         return user;
     }
 

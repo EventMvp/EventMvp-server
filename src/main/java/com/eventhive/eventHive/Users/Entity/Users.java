@@ -33,7 +33,7 @@ public class Users {
     @Column(name = "role", nullable = false, length = 20)
     private UserRole role;
 
-    @Column(name = "referral_code", nullable = false, unique = true, length = 50)
+    @Column(name = "referral_code", unique = true, length = 50)
     private String referralCode;
 
     @Column(name = "points", nullable = false)
