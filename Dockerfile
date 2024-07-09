@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 COPY src ./src
-COPY .env .
+#COPY .env .
 RUN mvn package -DskipTests
 RUN echo "done"
 
@@ -12,5 +12,5 @@ RUN echo "done"
 FROM openjdk:21-slim
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
-COPY --from=build /app/.env ./.env
+#COPY --from=build /app/.env ./.env
 ENTRYPOINT ["java","-jar","/app/app.jar"]
