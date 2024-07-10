@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login (@RequestBody LoginReqDto loginReqDto){
+    public ResponseEntity<?> login (@RequestBody LoginReqDto loginReqDto, HttpServletResponse response){
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
                         loginReqDto.getEmail(),
@@ -49,9 +49,13 @@ public class AuthController {
         loginRespDto.setToken(token);
 
         Cookie cookie = new Cookie("sid", token);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Set-Cookie", cookie.getName() + "=" + cookie.getValue() + "; Path=/; HttpOnly");
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(loginRespDto);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600); // 1 hour
+        cookie.setSecure(false); // Set to true if using HTTPS
+
+        response.addCookie(cookie);
+        return ResponseEntity.status(HttpStatus.OK).body(loginRespDto);
     }
 
     @PostMapping("/logout")

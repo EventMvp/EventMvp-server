@@ -82,10 +82,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/v1/events/add-event").hasAuthority("SCOPE_ORGANIZER");
                     auth.requestMatchers("/error/**").permitAll();
                     auth.requestMatchers("/api/v1/auth/**").permitAll();
                     auth.requestMatchers("/api/v1/users/register").permitAll();
+                    auth.requestMatchers("/api/v1/events/add-event").hasAuthority("SCOPE_ORGANIZER");
                     auth.requestMatchers("/api/v1/events/**").permitAll();
                     auth.requestMatchers("/api/v1/category").permitAll();
                     auth.requestMatchers("/api/v1/filter/**").permitAll();
