@@ -5,9 +5,7 @@ import com.eventhive.eventHive.Events.Dto.GetEventRespDto;
 import com.eventhive.eventHive.Events.Service.EventsService;
 import com.eventhive.eventHive.Response.Response;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -38,11 +36,12 @@ public class EventsController {
     @GetMapping("/filter")
     public ResponseEntity<?> filterEventsByMultipleCriteria(
             @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
             @RequestParam(required = false) Boolean isFree,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-        List<GetEventRespDto> events = service.filterWithMultipleCriteria(categoryId, date, isFree, page, size);
+            @RequestParam(defaultValue = "20") int size) {
+        List<GetEventRespDto> events = service.findEvents(categoryId, startDate, endDate, isFree, page, size);
         return Response.successResponse("Events with criteria successfully fetch", events);
     }
 

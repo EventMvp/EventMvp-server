@@ -8,6 +8,7 @@ import com.eventhive.eventHive.EventTicket.Service.EventTicketService;
 import com.eventhive.eventHive.Events.Dto.CreateEventReqDto;
 import com.eventhive.eventHive.Events.Dto.CreateEventResponseDto;
 import com.eventhive.eventHive.Events.Dto.GetEventRespDto;
+import com.eventhive.eventHive.Events.Entity.EventSpecifications;
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Events.Repository.EventsRepository;
 import com.eventhive.eventHive.Events.Service.EventsService;
@@ -21,6 +22,7 @@ import lombok.extern.java.Log;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -111,9 +113,11 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<GetEventRespDto> filterWithMultipleCriteria(Long categoryId, LocalDate date, Boolean isFree, int page, int size) {
+    public List<GetEventRespDto> findEvents(Long categoryId, LocalDate startDate, LocalDate endDate, Boolean isFree, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Events> eventsPage = repository.findByFilters(categoryId, date, isFree, pageable);
+        Specification<Events> spec = EventSpecifications.withFilters(categoryId, startDate, endDate, isFree);
+
+        Page<Events> eventsPage = repository.findAll(spec, pageable);
 
         return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
     }

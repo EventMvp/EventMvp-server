@@ -62,7 +62,7 @@ public class UsersServiceImpl implements UsersService {
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //check dto if referral code is provided
-        if (user.getReferralCode() != null && newUser.getRole() == Users.UserRole.CUSTOMER){
+        if (user.getReferralCode() != null && !user.getReferralCode().isEmpty() && newUser.getRole() == Users.UserRole.CUSTOMER){
             Users referringUser = repository.findByReferralCode(user.getReferralCode()).orElseThrow(() -> new ReferralNotFoundException("Referral code is not found"));
             //Create referral record
             referralService.createReferral(referringUser, newUser);

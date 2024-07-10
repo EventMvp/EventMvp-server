@@ -11,6 +11,6 @@ public interface EventsService {
     List<GetEventRespDto> getAllEvents(int page, int size);
     GetEventRespDto getEventById(Long eventId);
     CreateEventResponseDto createEvent(CreateEventReqDto dto);
-    List<GetEventRespDto> filterWithMultipleCriteria(Long categoryId, LocalDate date, Boolean isFree, int page, int size);
+    List<GetEventRespDto> findEvents(Long categoryId, LocalDate startDate, LocalDate endDate, Boolean isFree, int page, int size);
     List<GetEventRespDto> searchEventByTitle(String title, int page, int size);
 }
