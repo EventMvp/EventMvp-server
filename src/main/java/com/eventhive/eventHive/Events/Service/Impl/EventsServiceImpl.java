@@ -113,13 +113,19 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public List<GetEventRespDto> findEvents(Long categoryId, LocalDate startDate, LocalDate endDate, Boolean isFree, int page, int size) {
+    public Map<String, Object> findEvents(Long categoryId, LocalDate startDate, LocalDate endDate, Boolean isFree, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Events> spec = EventSpecifications.withFilters(categoryId, startDate, endDate, isFree);
 
         Page<Events> eventsPage = repository.findAll(spec, pageable);
 
-        return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
+        Map<String, Object> response = new HashMap<>();
+        response.put("content", eventsPage.getContent().stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList()));
+        response.put("currentPage", eventsPage.getNumber());
+        response.put("totalPages", eventsPage.getTotalPages());
+        response.put("totalElements", eventsPage.getTotalElements());
+
+        return response;
     }
 
     @Override

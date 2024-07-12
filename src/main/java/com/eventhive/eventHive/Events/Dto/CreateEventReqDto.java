@@ -18,7 +18,6 @@ public class CreateEventReqDto {
     private LocalTime time;
     private String location;
     private Long categoryId;
-    private BigDecimal price;
     private List<EventTicketDto> ticketTypes;
     private List<VoucherDto> vouchers;
     private String picture;

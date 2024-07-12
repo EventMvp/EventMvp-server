@@ -41,8 +41,8 @@ public class EventsController {
             @RequestParam(required = false) Boolean isFree,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        List<GetEventRespDto> events = service.findEvents(categoryId, startDate, endDate, isFree, page, size);
-        return Response.successResponse("Events with criteria successfully fetch", events);
+
+        return Response.successResponse("Events with criteria successfully fetch", service.findEvents(categoryId, startDate, endDate, isFree, page, size));
     }
 
     @PostMapping("/add-event")
