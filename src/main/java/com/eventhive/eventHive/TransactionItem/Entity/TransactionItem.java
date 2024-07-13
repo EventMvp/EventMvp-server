@@ -1,10 +1,13 @@
 package com.eventhive.eventHive.TransactionItem.Entity;
 
+import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.TicketType.Entity.TicketType;
 import com.eventhive.eventHive.Transaction.Entity.Transaction;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -24,15 +27,15 @@ public class TransactionItem {
     private Events event;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_type_id", referencedColumnName = "id")
-    private TicketType ticketType;
+    @JoinColumn(name = "event_ticket_id", referencedColumnName = "id")
+    private EventTicket eventTicket;
 
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "total_price", nullable = false)
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 }

@@ -1,5 +1,6 @@
 package com.eventhive.eventHive.Transaction.Entity;
 
+import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.TransactionItem.Entity.TransactionItem;
 import com.eventhive.eventHive.Users.Entity.Users;
 import com.eventhive.eventHive.Voucher.Entity.Voucher;
@@ -8,6 +9,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -27,6 +29,10 @@ public class Transaction {
     private BigDecimal totalAmount;
 
     @ManyToOne
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    private Events events;
+
+    @ManyToOne
     @JoinColumn(name = "voucher_id", referencedColumnName = "id")
     private Voucher voucher;
 
@@ -34,7 +40,7 @@ public class Transaction {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
-    private Set<TransactionItem> transactionItems;
+    private List<TransactionItem> transactionItems;
 
     @PrePersist
     protected void onCreate() {

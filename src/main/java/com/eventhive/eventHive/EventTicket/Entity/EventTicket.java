@@ -17,7 +17,6 @@ public class EventTicket {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Events event;

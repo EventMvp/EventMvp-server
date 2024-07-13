@@ -1,13 +1,11 @@
 package com.eventhive.eventHive.Transaction;
 
 import com.eventhive.eventHive.Response.Response;
+import com.eventhive.eventHive.Transaction.Dto.TransactionRequestDto;
 import com.eventhive.eventHive.Transaction.Service.TransactionService;
 import com.eventhive.eventHive.TransactionItem.Entity.TransactionItem;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,9 +20,9 @@ public class TransactionController {
 
     @PostMapping
     public ResponseEntity<?> createTransaction(
-            @RequestParam Long userId,
-            @RequestParam List<TransactionItem> items,
-            @RequestParam(required = false) Long voucherId){
-        return Response.successResponse("Transaction has been created", transactionService.createTransaction(userId, items, voucherId));
+            @RequestBody TransactionRequestDto requestDto
+            )
+    {
+        return Response.successResponse("Transaction success", transactionService.createTransaction(requestDto));
     }
 }

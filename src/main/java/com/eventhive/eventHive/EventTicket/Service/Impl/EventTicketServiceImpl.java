@@ -23,4 +23,14 @@ public class EventTicketServiceImpl implements EventTicketService {
     public void saveEventTicket(EventTicket eventTicket) {
         repository.save(eventTicket);
     }
+
+    @Override
+    public void reduceTicket(EventTicket eventTicket, int quantity) {
+        int newAvailableSeat = eventTicket.getAvailableSeats() - quantity;
+        if (newAvailableSeat < 0){
+            throw new RuntimeException("Not enough Tickets for " + eventTicket.getTicketType().getTypeName());
+        }
+        eventTicket.setAvailableSeats(newAvailableSeat);
+    }
+
 }

@@ -7,6 +7,8 @@ import com.eventhive.eventHive.Voucher.Repository.VoucherRepository;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -42,5 +44,24 @@ public class VoucherServiceImpl implements VoucherService {
         voucher.setOrganizer(users);
 
         voucherRepository.save(voucher);
+    }
+
+    @Override
+    public BigDecimal applyVoucher(BigDecimal totalAmount, Long voucherId) {
+        Voucher voucher = voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new VoucherNotExistException("Voucher is not exist"));
+
+        if (voucher.getExpiryDate().isBefore(LocalDate.now())){
+            throw new VoucherNotExistException("Voucher has expired");
+        }
+
+        return totalAmount.multiply(BigDecimal.valueOf(voucher.getDiscountPercentage()))
+                .divide(BigDecimal.valueOf(100), RoundingMode.FLOOR);
+    }
+
+    @Override
+    public Voucher findById(Long voucherId) {
+        return voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new VoucherNotExistException("Voucher is not exist"));
     }
 }

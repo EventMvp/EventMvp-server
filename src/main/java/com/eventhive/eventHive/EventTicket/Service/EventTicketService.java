@@ -4,6 +4,6 @@ import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
 
 public interface EventTicketService {
     EventTicket getEventTicketById (Long id);
-
     void saveEventTicket(EventTicket eventTicket);
+    void reduceTicket(EventTicket eventTicket, int quantity);
 }

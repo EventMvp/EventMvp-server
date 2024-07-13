@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TransactionItemRequestDto {
     private Long eventId;
-    private Long ticketTypeId;
+    private Long eventTicketId;
     private int quantity;
 }
