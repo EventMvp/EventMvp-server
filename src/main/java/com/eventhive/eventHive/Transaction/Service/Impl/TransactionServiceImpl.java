@@ -38,20 +38,16 @@ import java.util.stream.Collectors;
 public class TransactionServiceImpl implements TransactionService {
     private final UsersRepository usersRepository;
     private final EventsRepository eventsRepository;
-    private final TransactionItemRepository transactionItemRepository;
     private final TransactionRepository transactionRepository;
-    private final VoucherRepository voucherRepository;
     private final EventTicketRepository eventTicketRepository;
     private final EventTicketService eventTicketService;
     private final VoucherService voucherService;
     private final PointHistoryService pointHistoryService;
 
-    public TransactionServiceImpl(UsersRepository usersRepository, EventsRepository eventsRepository, TransactionItemRepository transactionItemRepository, TransactionRepository transactionRepository, VoucherRepository voucherRepository, EventTicketRepository eventTicketRepository, EventTicketService eventTicketService, VoucherService voucherService, PointHistoryService pointHistoryService) {
+    public TransactionServiceImpl(UsersRepository usersRepository, EventsRepository eventsRepository, TransactionRepository transactionRepository, EventTicketRepository eventTicketRepository, EventTicketService eventTicketService, VoucherService voucherService, PointHistoryService pointHistoryService) {
         this.usersRepository = usersRepository;
         this.eventsRepository = eventsRepository;
-        this.transactionItemRepository = transactionItemRepository;
         this.transactionRepository = transactionRepository;
-        this.voucherRepository = voucherRepository;
         this.eventTicketRepository = eventTicketRepository;
         this.eventTicketService = eventTicketService;
         this.voucherService = voucherService;

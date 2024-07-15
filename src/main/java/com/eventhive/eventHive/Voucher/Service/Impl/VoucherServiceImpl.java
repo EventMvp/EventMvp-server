@@ -5,12 +5,14 @@ import com.eventhive.eventHive.Users.Entity.Users;
 import com.eventhive.eventHive.Voucher.Entity.Voucher;
 import com.eventhive.eventHive.Voucher.Repository.VoucherRepository;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
+import com.eventhive.eventHive.Voucher.dto.VoucherDto;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class VoucherServiceImpl implements VoucherService {
@@ -63,5 +65,15 @@ public class VoucherServiceImpl implements VoucherService {
     public Voucher findById(Long voucherId) {
         return voucherRepository.findById(voucherId)
                 .orElseThrow(() -> new VoucherNotExistException("Voucher is not exist"));
+    }
+
+    @Override
+    public List<VoucherDto> findVoucherByEventID(Long eventId) {
+        List<Voucher> voucherList = voucherRepository.findByEventId(eventId)
+                .orElseThrow(() -> new VoucherNotExistException("Voucher by this event is not exist"));
+
+        return voucherList.stream()
+                .map(VoucherDto::convertToDto)
+                .toList();
     }
 }

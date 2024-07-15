@@ -18,4 +18,9 @@ public class VoucherController {
     public ResponseEntity<?> validateVoucher(@PathVariable Long id){
         return Response.successResponse("Voucher is valid", voucherService.validateVoucher(id));
     }
+
+    @GetMapping
+    public ResponseEntity<?> getVouchersByEventId(@RequestParam Long eventId){
+        return Response.successResponse("Fetch Voucher successfully", voucherService.findVoucherByEventID(eventId));
+    }
 }
