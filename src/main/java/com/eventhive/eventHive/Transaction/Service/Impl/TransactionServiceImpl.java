@@ -6,6 +6,7 @@ import com.eventhive.eventHive.EventTicket.Repository.EventTicketRepository;
 import com.eventhive.eventHive.EventTicket.Service.EventTicketService;
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Events.Repository.EventsRepository;
+import com.eventhive.eventHive.Events.Service.EventsService;
 import com.eventhive.eventHive.Exceptions.EventNotExistException;
 import com.eventhive.eventHive.Exceptions.EventTicketNotExistException;
 import com.eventhive.eventHive.Exceptions.VoucherNotExistException;
@@ -21,6 +22,7 @@ import com.eventhive.eventHive.TransactionItem.Entity.TransactionItem;
 import com.eventhive.eventHive.TransactionItem.Repository.TransactionItemRepository;
 import com.eventhive.eventHive.Users.Entity.Users;
 import com.eventhive.eventHive.Users.Repository.UsersRepository;
+import com.eventhive.eventHive.Users.Service.UsersService;
 import com.eventhive.eventHive.Voucher.Entity.Voucher;
 import com.eventhive.eventHive.Voucher.Repository.VoucherRepository;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
@@ -36,19 +38,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
-    private final UsersRepository usersRepository;
-    private final EventsRepository eventsRepository;
+    private final UsersService usersService;
+    private final EventsService eventsService;
     private final TransactionRepository transactionRepository;
-    private final EventTicketRepository eventTicketRepository;
     private final EventTicketService eventTicketService;
     private final VoucherService voucherService;
     private final PointHistoryService pointHistoryService;
 
-    public TransactionServiceImpl(UsersRepository usersRepository, EventsRepository eventsRepository, TransactionRepository transactionRepository, EventTicketRepository eventTicketRepository, EventTicketService eventTicketService, VoucherService voucherService, PointHistoryService pointHistoryService) {
-        this.usersRepository = usersRepository;
-        this.eventsRepository = eventsRepository;
+    public TransactionServiceImpl(UsersService usersService, EventsService eventsService, TransactionRepository transactionRepository, EventTicketService eventTicketService, VoucherService voucherService, PointHistoryService pointHistoryService) {
+        this.usersService = usersService;
+        this.eventsService = eventsService;
         this.transactionRepository = transactionRepository;
-        this.eventTicketRepository = eventTicketRepository;
         this.eventTicketService = eventTicketService;
         this.voucherService = voucherService;
         this.pointHistoryService = pointHistoryService;
@@ -57,19 +57,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     @Override
     public TransactionResponseDto createTransaction(TransactionRequestDto requestDto) {
-        Users user = usersRepository.findById(requestDto.getUserId())
-                .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+        Users user = usersService.findById(requestDto.getUserId());
 
-        Events event = eventsRepository.findById(requestDto.getEventId())
-                .orElseThrow(() -> new EventNotExistException("Event is not found"));
+        Events event = eventsService.findById(requestDto.getEventId());
 
         // 2. Calculate total amount
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<TransactionItem> transactionItems = new ArrayList<>();
 
         for (TransactionItemRequestDto item : requestDto.getItems()){
-            EventTicket eventTicket = eventTicketRepository.findById(item.getEventTicketId())
-                    .orElseThrow(() -> new EventTicketNotExistException("Event ticket is not available"));
+            EventTicket eventTicket = eventTicketService.getEventTicketById(item.getEventTicketId());
 
             if (!Objects.equals(eventTicket.getEvent().getId(), item.getEventId())){
                 throw new RuntimeException("Event Ticket does not belong to this event");
@@ -83,6 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactionItem.setQuantity(item.getQuantity());
             transactionItem.setPrice(eventTicket.getPrice());
             transactionItem.setTotalPrice(subtotal);
+            transactionItem.setEvent(eventTicket.getEvent());
             transactionItems.add(transactionItem);
 
             //reduce ticket seat

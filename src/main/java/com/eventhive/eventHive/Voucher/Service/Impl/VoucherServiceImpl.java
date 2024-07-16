@@ -1,5 +1,6 @@
 package com.eventhive.eventHive.Voucher.Service.Impl;
 
+import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Exceptions.VoucherNotExistException;
 import com.eventhive.eventHive.Users.Entity.Users;
 import com.eventhive.eventHive.Voucher.Entity.Voucher;
@@ -37,13 +38,14 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public void issueReferralVoucher(Users users) {
+    public void issueReferralVoucher(Events events) {
         Voucher voucher = new Voucher();
         voucher.setName("Referral 10% Discount");
         voucher.setDiscountPercentage(10);
         voucher.setExpiryDate(LocalDate.now().plusMonths(3));
         voucher.setReferralBased(true);
-        voucher.setOrganizer(users);
+        voucher.setEvent(events);
+        voucher.setOrganizer(events.getOrganizer());
 
         voucherRepository.save(voucher);
     }

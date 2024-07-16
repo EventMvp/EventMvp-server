@@ -48,7 +48,6 @@ public class EventsController {
     @PostMapping("/add-event")
     public ResponseEntity<?> createEvent(@RequestBody CreateEventReqDto dto){
         return Response.successResponse("Success Add Event", service.createEvent(dto));
-
     }
 
     @GetMapping("/search")

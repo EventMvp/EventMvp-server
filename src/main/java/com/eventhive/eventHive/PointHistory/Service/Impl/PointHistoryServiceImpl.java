@@ -59,6 +59,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         PointHistory pointHistory = new PointHistory();
         pointHistory.setUser(user);
         pointHistory.setPoints(-pointToRedeem);
+        repository.save(pointHistory);
 
         return pointToRedeem;
 

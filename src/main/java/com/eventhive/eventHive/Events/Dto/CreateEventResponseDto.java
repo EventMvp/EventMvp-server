@@ -1,6 +1,8 @@
 package com.eventhive.eventHive.Events.Dto;
 
 import com.eventhive.eventHive.Events.Entity.Events;
+import com.eventhive.eventHive.utils.LocalDateSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -11,6 +13,7 @@ public class CreateEventResponseDto {
     private String title;
     private String description;
     private String picture;
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate date;
     private LocalTime time;
     private String location;

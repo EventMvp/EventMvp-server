@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
-    @Query("SELECT p from PointHistory p WHERE p.user.id = :userId AND p.expiryAt > :now AND p.points > 0")
+    @Query("SELECT p from PointHistory p WHERE p.user.id = :userId AND p.expiryAt > :now OR p.expiryAt IS NULL")
     List<PointHistory> findActivePointByUserId(
             @Param("userId") Long userId,
             @Param("now")LocalDate now

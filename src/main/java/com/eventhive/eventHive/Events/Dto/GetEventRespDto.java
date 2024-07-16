@@ -19,6 +19,7 @@ public class GetEventRespDto {
     private Long id;
     private String title;
     private String description;
+    private String organizer;
     private String date;
     private String time;
     private String location;
@@ -29,6 +30,7 @@ public class GetEventRespDto {
         dto.setId(events.getId());
         dto.setTitle(events.getTitle());
         dto.setDescription(events.getDescription());
+        dto.setOrganizer(events.getOrganizer().getUsername());
         dto.setDate(events.getDate().toString());
         dto.setTime(events.getTime().toString());
         dto.setLocation(events.getLocation());

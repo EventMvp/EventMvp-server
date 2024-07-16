@@ -12,6 +12,7 @@ import com.eventhive.eventHive.Events.Entity.EventSpecifications;
 import com.eventhive.eventHive.Events.Entity.Events;
 import com.eventhive.eventHive.Events.Repository.EventsRepository;
 import com.eventhive.eventHive.Events.Service.EventsService;
+import com.eventhive.eventHive.Exceptions.EventNotExistException;
 import com.eventhive.eventHive.TicketType.Entity.TicketType;
 import com.eventhive.eventHive.TicketType.Service.TicketTypeService;
 import com.eventhive.eventHive.Users.Service.UsersService;
@@ -97,6 +98,10 @@ public class EventsServiceImpl implements EventsService {
         //Save the vouchers
         if (dto.getVouchers() != null){
             for (VoucherDto voucherDto : dto.getVouchers()){
+                if (voucherDto.getIsReferralPromotion()){
+                    voucherService.issueReferralVoucher(savedEvent);
+                    continue;
+                }
                 Voucher voucher = new Voucher();
                 voucher.setEvent(savedEvent);
                 voucher.setName(voucherDto.getName());
@@ -134,5 +139,10 @@ public class EventsServiceImpl implements EventsService {
         Page<Events> eventsPage = repository.findByTitle(title, pageable);
 
         return eventsPage.stream().map(GetEventRespDto::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public Events findById(Long eventId) {
+        return repository.findById(eventId).orElseThrow(() -> new EventNotExistException("Event is not exist"));
     }
 }

@@ -68,8 +68,7 @@ public class UsersServiceImpl implements UsersService {
             referralService.createReferral(referringUser, newUser);
             //Create a history point record
             pointHistoryService.awardsPoints(referringUser, 10000);
-            //give voucher to users that use referral
-            voucherService.issueReferralVoucher(referringUser);
+
         }
         //Ensure referral code only set to customer role
         if (newUser.getRole() == Users.UserRole.CUSTOMER){
@@ -94,5 +93,10 @@ public class UsersServiceImpl implements UsersService {
         profileDto.setPoints(pointHistoryService.totalActivePoints(currentUserId));
         log.info("PROFILE DTO = " + profileDto);
         return profileDto;
+    }
+
+    @Override
+    public Users findById(Long userId) {
+        return repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Username is not exist"));
     }
 }

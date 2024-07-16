@@ -8,6 +8,6 @@ import com.eventhive.eventHive.Users.dto.UserProfileDto;
 public interface UsersService {
     Users getUserById(Long userId);
     RegisterRespDto register(RegisterReqDto user);
-
     UserProfileDto getProfile();
+    Users findById(Long userId);
 }

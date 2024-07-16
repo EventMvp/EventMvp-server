@@ -15,6 +15,7 @@ public class VoucherDto {
     private String name;
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate expiryDate;
+    private Boolean isReferralPromotion;
 
     public static VoucherDto convertToDto (Voucher voucher){
         VoucherDto dto = new VoucherDto();
@@ -22,6 +23,7 @@ public class VoucherDto {
         dto.setName(voucher.getName());
         dto.setExpiryDate(voucher.getExpiryDate());
         dto.setDiscountPercentage(voucher.getDiscountPercentage());
+        dto.setIsReferralPromotion(voucher.isReferralBased());
         return dto;
     }
 }
