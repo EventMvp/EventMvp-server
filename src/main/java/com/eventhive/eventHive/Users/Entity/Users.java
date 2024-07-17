@@ -48,6 +48,9 @@ public class Users {
     @OneToMany(mappedBy = "organizer")
     private Set<Events> events;
 
+    @Column(name = "is_used_referral_benefit", nullable = false)
+    private Boolean isUsedReferralBenefit = false;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

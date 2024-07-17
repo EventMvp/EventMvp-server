@@ -8,9 +8,11 @@ import lombok.Data;
 import lombok.extern.java.Log;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Data
@@ -24,6 +26,7 @@ public class GetEventRespDto {
     private String time;
     private String location;
     private CategoryRespDto category;
+    private String picture;
     private String priceRange;
     public static GetEventRespDto convertToDto (Events events){
         GetEventRespDto dto = new GetEventRespDto();
@@ -34,16 +37,28 @@ public class GetEventRespDto {
         dto.setDate(events.getDate().toString());
         dto.setTime(events.getTime().toString());
         dto.setLocation(events.getLocation());
+        dto.setPicture(events.getPicture());
         dto.setCategory(CategoryRespDto.convertDto(events.getCategory()));
 
         // Get Price Range
         List<BigDecimal> prices = events.getEventTickets().stream()
                 .map(EventTicket::getPrice)
                 .toList();
-        if (prices != null && !prices.isEmpty()){
+        if (prices != null && !prices.isEmpty()) {
             BigDecimal minPrice = prices.stream().min(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
             BigDecimal maxPrice = prices.stream().max(BigDecimal::compareTo).orElse(BigDecimal.ZERO);
-            dto.setPriceRange(minPrice.equals(maxPrice) ? minPrice.toString() : minPrice + " - " + maxPrice);
+
+            if (minPrice.compareTo(BigDecimal.ZERO) == 0 && maxPrice.compareTo(BigDecimal.ZERO) == 0) {
+                dto.setPriceRange("FREE");
+            } else {
+                var idrLocale = Locale.of("id", "ID");
+                var idrFormat = NumberFormat.getCurrencyInstance(idrLocale);
+                idrFormat.setMaximumFractionDigits(0);
+
+                dto.setPriceRange(minPrice.equals(maxPrice)
+                        ? idrFormat.format(minPrice)
+                        : idrFormat.format(minPrice) + " - " + idrFormat.format(maxPrice));
+            }
         } else {
             dto.setPriceRange("FREE");
         }

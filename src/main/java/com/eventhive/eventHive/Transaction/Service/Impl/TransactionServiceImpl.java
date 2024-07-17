@@ -11,6 +11,8 @@ import com.eventhive.eventHive.Exceptions.EventNotExistException;
 import com.eventhive.eventHive.Exceptions.EventTicketNotExistException;
 import com.eventhive.eventHive.Exceptions.VoucherNotExistException;
 import com.eventhive.eventHive.PointHistory.Service.PointHistoryService;
+import com.eventhive.eventHive.Transaction.Dto.EventPurchaseInfo;
+import com.eventhive.eventHive.Transaction.Dto.FreeEventTransactionDto;
 import com.eventhive.eventHive.Transaction.Dto.TransactionRequestDto;
 import com.eventhive.eventHive.Transaction.Dto.TransactionResponseDto;
 import com.eventhive.eventHive.Transaction.Entity.Transaction;
@@ -122,6 +124,52 @@ public class TransactionServiceImpl implements TransactionService {
 
         return responseDto;
 
+    }
+
+    @Override
+    public TransactionResponseDto createFreeEventTransaction(FreeEventTransactionDto dto) {
+        Users user = usersService.findById(dto.getUserId());
+        Events event = eventsService.findById(dto.getEventId());
+        EventTicket eventTicket = eventTicketService.getEventTicketById(dto.getEventTicketId());
+
+        if (eventTicket.getPrice().compareTo(BigDecimal.ZERO) != 0) {
+            throw new EventTicketNotExistException("Event is not free");
+        }
+
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setEvents(event);
+        transaction.setTotalAmount(BigDecimal.ZERO);
+        transaction.setTransactionItems(new ArrayList<>());
+
+        TransactionItem transactionItem = new TransactionItem();
+        transactionItem.setEventTicket(eventTicket);
+        transactionItem.setQuantity(1);
+        transactionItem.setPrice(BigDecimal.ZERO);
+        transactionItem.setTotalPrice(BigDecimal.ZERO);
+        transactionItem.setEvent(event);
+        transactionItem.setTransaction(transaction);
+
+        transaction.getTransactionItems().add(transactionItem);
+        transaction = transactionRepository.save(transaction);
+        eventTicketService.reduceTicket(eventTicket, 1);
+
+        TransactionResponseDto responseDto = new TransactionResponseDto();
+        responseDto.setTransactionId(transaction.getId());
+        responseDto.setTotalAmount(BigDecimal.ZERO);
+        responseDto.setPointUsed(0);
+        responseDto.setTransactionItems(Collections.singletonList(TransactionItemDto.convertToDto(transactionItem)));
+
+        return responseDto;
+    }
+
+    @Override
+    public List<EventPurchaseInfo> getEventPurchaseInfo(Long userId) {
+        List<Transaction> userTransactions = transactionRepository.findByUserId(userId);
+
+        return userTransactions.stream()
+                .map(EventPurchaseInfo::mapToEventPurchaseInfo)
+                .collect(Collectors.toList());
     }
 
 

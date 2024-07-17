@@ -11,6 +11,7 @@ public class UserProfileDto {
     private String email;
     private Integer points;
     private String referralCode;
+    private Boolean isReferral;
 
     public static UserProfileDto fromEntity(Users users){
         UserProfileDto userProfileDto = new UserProfileDto();
@@ -18,6 +19,7 @@ public class UserProfileDto {
         userProfileDto.setEmail(users.getEmail());
         userProfileDto.setUsername(users.getUsername());
         userProfileDto.setReferralCode(users.getReferralCode());
+        userProfileDto.setIsReferral(users.getIsUsedReferralBenefit());
         return userProfileDto;
     }
 }

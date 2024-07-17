@@ -68,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
             referralService.createReferral(referringUser, newUser);
             //Create a history point record
             pointHistoryService.awardsPoints(referringUser, 10000);
-
+            newUser.setIsUsedReferralBenefit(true);
         }
         //Ensure referral code only set to customer role
         if (newUser.getRole() == Users.UserRole.CUSTOMER){

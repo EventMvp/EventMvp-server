@@ -80,6 +80,7 @@ public class EventsServiceImpl implements EventsService {
         event.setPicture(dto.getPicture());
         var savedEvent = repository.save(event);
         List<EventTicket> savedEventTickets = new ArrayList<>();
+
         //save event ticket
         for (EventTicketDto eventTicketDto : dto.getTicketTypes()){
             EventTicket eventTicket = new EventTicket();
