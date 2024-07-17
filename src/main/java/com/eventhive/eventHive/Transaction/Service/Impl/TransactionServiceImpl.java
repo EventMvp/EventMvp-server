@@ -2,41 +2,28 @@ package com.eventhive.eventHive.Transaction.Service.Impl;
 
 import com.eventhive.eventHive.Auth.helper.Claims;
 import com.eventhive.eventHive.EventTicket.Entity.EventTicket;
-import com.eventhive.eventHive.EventTicket.Repository.EventTicketRepository;
 import com.eventhive.eventHive.EventTicket.Service.EventTicketService;
 import com.eventhive.eventHive.Events.Entity.Events;
-import com.eventhive.eventHive.Events.Repository.EventsRepository;
 import com.eventhive.eventHive.Events.Service.EventsService;
-import com.eventhive.eventHive.Exceptions.EventNotExistException;
 import com.eventhive.eventHive.Exceptions.EventTicketNotExistException;
-import com.eventhive.eventHive.Exceptions.VoucherNotExistException;
 import com.eventhive.eventHive.PointHistory.Service.PointHistoryService;
-import com.eventhive.eventHive.Transaction.Dto.EventPurchaseInfo;
-import com.eventhive.eventHive.Transaction.Dto.FreeEventTransactionDto;
-import com.eventhive.eventHive.Transaction.Dto.TransactionRequestDto;
-import com.eventhive.eventHive.Transaction.Dto.TransactionResponseDto;
+import com.eventhive.eventHive.Transaction.Dto.*;
 import com.eventhive.eventHive.Transaction.Entity.Transaction;
 import com.eventhive.eventHive.Transaction.Repository.TransactionRepository;
 import com.eventhive.eventHive.Transaction.Service.TransactionService;
 import com.eventhive.eventHive.TransactionItem.Dto.TransactionItemDto;
 import com.eventhive.eventHive.TransactionItem.Dto.TransactionItemRequestDto;
 import com.eventhive.eventHive.TransactionItem.Entity.TransactionItem;
-import com.eventhive.eventHive.TransactionItem.Repository.TransactionItemRepository;
 import com.eventhive.eventHive.Users.Entity.Users;
-import com.eventhive.eventHive.Users.Repository.UsersRepository;
 import com.eventhive.eventHive.Users.Service.UsersService;
 import com.eventhive.eventHive.Voucher.Entity.Voucher;
-import com.eventhive.eventHive.Voucher.Repository.VoucherRepository;
 import com.eventhive.eventHive.Voucher.Service.VoucherService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -164,12 +151,23 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<EventPurchaseInfo> getEventPurchaseInfo(Long userId) {
-        List<Transaction> userTransactions = transactionRepository.findByUserId(userId);
+    public EventPurchaseResult getEventPurchaseInfo() {
+        var claims = Claims.getClaimsFromJwt();
+        Long userId = (Long) claims.get("userId");
+        LocalDate currentDate = LocalDate.now();
 
-        return userTransactions.stream()
+        List<Transaction> upcomingTransactions = transactionRepository.findUpcomingTransactionsByUserId(userId, currentDate);
+        List<Transaction> pastTransactions = transactionRepository.findPastTransactionsByUserId(userId, currentDate);
+
+        List<EventPurchaseInfo> upcomingEvents = upcomingTransactions.stream()
                 .map(EventPurchaseInfo::mapToEventPurchaseInfo)
-                .collect(Collectors.toList());
+                .toList();
+
+        List<EventPurchaseInfo> pastEvents = pastTransactions.stream()
+                .map(EventPurchaseInfo::mapToEventPurchaseInfo)
+                .toList();
+
+        return new EventPurchaseResult(upcomingEvents, pastEvents);
     }
 
 

@@ -4,11 +4,8 @@ import com.eventhive.eventHive.Response.Response;
 import com.eventhive.eventHive.Transaction.Dto.FreeEventTransactionDto;
 import com.eventhive.eventHive.Transaction.Dto.TransactionRequestDto;
 import com.eventhive.eventHive.Transaction.Service.TransactionService;
-import com.eventhive.eventHive.TransactionItem.Entity.TransactionItem;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/transactions")
@@ -32,8 +29,8 @@ public class TransactionController {
         return Response.successResponse("Free Ticket is yours", transactionService.createFreeEventTransaction(dto));
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> getPurchaseInfo(@PathVariable Long userId){
-        return Response.successResponse("Get Events purchase success", transactionService.getEventPurchaseInfo(userId));
+    @GetMapping("/purchased")
+    public ResponseEntity<?> getPurchaseInfo(){
+        return Response.successResponse("Get Events purchase success", transactionService.getEventPurchaseInfo());
     }
 }
