@@ -95,6 +95,11 @@ public class SecurityConfig {
                 .oauth2ResourceServer((oauth2) -> {
                     oauth2.jwt((jwt) -> jwt.decoder(jwtDecoder()));
                     oauth2.bearerTokenResolver((request) -> {
+                        String authHeader = request.getHeader("Authorization");
+                        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                            return authHeader.substring(7);
+                        }
+
                         Cookie[] cookies = request.getCookies();
                         if (cookies != null){
                             for (Cookie cookie : cookies){
